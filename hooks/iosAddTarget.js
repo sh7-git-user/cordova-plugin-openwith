@@ -120,21 +120,25 @@ module.exports = function(context) {
     });
 
     // Add build settings for Swift support, bridging header and xcconfig files
-    var configurations = pbxProject.pbxXCBuildConfigurationSection();
-    for (var key in configurations) {
-      if (typeof configurations[key].buildSettings !== 'undefined') {
-        var buildSettingsObj = configurations[key].buildSettings;
-        if (typeof buildSettingsObj['PRODUCT_NAME'] !== 'undefined') {
-          var productName = buildSettingsObj['PRODUCT_NAME'];
-          if (productName.indexOf('ShareExt') >= 0) {
-            buildSettingsObj['LD_RUNPATH_SEARCH_PATHS'] = '$(inherited)';
+ var configurations = pbxProject.pbxXCBuildConfigurationSection();
+
+for (var key in configurations) {
+  if (typeof configurations[key].buildSettings !== 'undefined') {
+
+    var buildSettingsObj = configurations[key].buildSettings;
+
+    // ✅ APPLY TO ALL (REMOVE PRODUCT_NAME CONDITION)
+    buildSettingsObj['LD_RUNPATH_SEARCH_PATHS'] = '$(inherited)';
     buildSettingsObj['FRAMEWORK_SEARCH_PATHS'] = '$(inherited)';
     buildSettingsObj['HEADER_SEARCH_PATHS'] = '$(inherited)';
 
-            buildSettingsObj['CODE_SIGN_ENTITLEMENTS'] = '"ShareExtension/ShareExtension.entitlements"';
-          }
-        }
-      }
+    // Keep this only for ShareExt
+    if (buildSettingsObj['PRODUCT_NAME'] &&
+        buildSettingsObj['PRODUCT_NAME'].indexOf('ShareExt') >= 0) {
+      buildSettingsObj['CODE_SIGN_ENTITLEMENTS'] = '"ShareExtension/ShareExtension.entitlements"';
+    }
+  }
+}
     }
 
     // Write the modified project back to disc
