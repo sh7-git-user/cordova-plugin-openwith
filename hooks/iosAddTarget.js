@@ -127,6 +127,10 @@ module.exports = function(context) {
         if (typeof buildSettingsObj['PRODUCT_NAME'] !== 'undefined') {
           var productName = buildSettingsObj['PRODUCT_NAME'];
           if (productName.indexOf('ShareExt') >= 0) {
+            buildSettingsObj['LD_RUNPATH_SEARCH_PATHS'] = '$(inherited)';
+    buildSettingsObj['FRAMEWORK_SEARCH_PATHS'] = '$(inherited)';
+    buildSettingsObj['HEADER_SEARCH_PATHS'] = '$(inherited)';
+
             buildSettingsObj['CODE_SIGN_ENTITLEMENTS'] = '"ShareExtension/ShareExtension.entitlements"';
           }
         }
